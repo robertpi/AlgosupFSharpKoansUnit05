@@ -52,7 +52,7 @@ module KoansExercise =
             | '5' -> Rank 5
             | '6' -> Rank 6
             | '7' -> Rank 7
-            | '8' -> Rank 6
+            | '8' -> Rank 8
             | '9' -> Rank 9
             | 'T' -> Rank 10
             | 'J' -> Jack
@@ -86,11 +86,27 @@ module KoansExercise =
         // Use an option as return type, with None meaning bust
 
         let calculateBlackJackScore cards =
-            __
 
+            let rec addaces score aces =
+                match aces with
+                | 0 when score > 21 -> None
+                | 0 -> Some score
+                | _ when score < (12 - aces) -> addaces (score + 11) (aces - 1) 
+                | _ -> addaces (score + 1) (aces - 1) 
+
+            let rec calc cards score aces =
+                match cards |> List.head |> snd with
+                | Rank x when cards |> List.length = 1-> addaces (score + x) aces
+                | Ace when cards |> List.length = 1 -> addaces score (aces + 1)
+                | _ when cards |> List.length = 1 -> addaces (score + 10) aces
+                | Rank x -> calc (cards |> List.tail) (score + x) aces
+                | Ace -> calc (cards |> List.tail) score (aces + 1)
+                | _ -> calc (cards |> List.tail) (score + 10) aces
+
+            calc cards 0 0
         AssertEquality (Some 13) (calculateBlackJackScore (makeCards ["3H"; "QD" ]))
         AssertEquality (Some 17) (calculateBlackJackScore (makeCards ["JD"; "5H"; "2S" ]))
-        AssertEquality (Some 17) (calculateBlackJackScore (makeCards ["9C"; "3H"; "2D"; "2S" ]))
+        AssertEquality (Some 16) (calculateBlackJackScore (makeCards ["9C"; "3H"; "2D"; "2S" ]))
         AssertEquality (Some 21) (calculateBlackJackScore (makeCards ["AS"; "QH" ]))
         AssertEquality (Some 12) (calculateBlackJackScore (makeCards ["AH"; "3C"; "8C" ]))
         AssertEquality None (calculateBlackJackScore (makeCards ["JD"; "4S"; "8H" ]))
