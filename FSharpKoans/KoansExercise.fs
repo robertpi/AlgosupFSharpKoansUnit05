@@ -86,18 +86,45 @@ module KoansExercise =
         // Use an option as return type, with None meaning bust
 
         let calculateBlackJackScore cards =
-
-            let add score (suite, rank) =
+            let score (suit, rank) = 
                 match rank with
-                | Rank (value) -> value + score
-                | Jack | Queen | King -> 10 + score
-                | Ace when score <= 10 -> 11 + score
-                | Ace -> 1 + score
+                | Jack | Queen | King | Rank 10 -> 10
+                | Ace -> 11
+                | Rank 2 -> 2
+                | Rank 3 -> 3
+                | Rank 4 -> 4
+                | Rank 5 -> 5
+                | Rank 6 -> 6
+                | Rank 7 -> 7
+                | Rank 8 -> 8
+                | Rank 9 -> 9
+                | _ -> 0
 
-            let total =
-                cards |> List.sortByDescending (fun (s,r) -> r) |> List.fold add 0
-            
-            if total > 21 then None else Some total
+            let scoreAce (suit, rank) = 
+                match rank with
+                | Jack | Queen | King | Rank 10 -> 10
+                | Ace -> 1
+                | Rank 2 -> 2
+                | Rank 3 -> 3
+                | Rank 4 -> 4
+                | Rank 5 -> 5
+                | Rank 6 -> 6
+                | Rank 7 -> 7
+                | Rank 8 -> 8
+                | Rank 9 -> 9
+                | _ -> 0
+            let sum card = card |> List.map (fun x -> (score x)) |> List.sum
+
+            if sum cards > 21 then
+                let score = cards |> List.map (fun x -> (scoreAce x)) |> List.sum
+                if score > 21 then
+                    None
+                else
+                    score |> Some
+            else
+                sum cards |> Some
+
+
 
         AssertEquality (Some 13) (calculateBlackJackScore (makeCards ["3H"; "QD" ]))
         AssertEquality (Some 17) (calculateBlackJackScore (makeCards ["JD"; "5H"; "2S" ]))
@@ -106,6 +133,48 @@ module KoansExercise =
         AssertEquality (Some 12) (calculateBlackJackScore (makeCards ["AH"; "3C"; "8C" ]))
         AssertEquality None (calculateBlackJackScore (makeCards ["JD"; "4S"; "8H" ]))
 
+    [<Koan>]
+    let PokerHands() =
+        // A poker hand consists of 5 cards dealt from the deck. Poker hands are
+        // ranked by the following partial order from lowest to highest.
+
+        // - High Card: Hands which do not fit any higher category are ranked by the value
+        // of their highest card. If the highest cards have the same value, the hands are
+        // ranked by the next highest, and so on.
+        // - Pair: 2 of the 5 cards in the hand have the same value. Hands which both contain
+        // a pair are ranked by the value of the cards forming the pair. If these values are
+        // the same, the hands are ranked by the values of the cards not forming the pair, in
+        // decreasing order.
+        // - Two Pairs: The hand contains 2 different pairs. Hands which both contain 2 pairs
+        // are ranked by the value of their highest pair. Hands with the same highest pair are
+        // ranked by the value of their other pair. If these values are the same the hands are
+        // ranked by the value of the remaining card.
+        // - Three of a Kind: Three of the cards in the hand have the same value. Hands which
+        // both contain three of a kind are ranked by the value of the 3 cards.
+        // - Straight: Hand contains 5 cards with consecutive values. Hands which both contain a
+        // straight are ranked by their highest card.
+        // - Flush: Hand contains 5 cards of the same suit. Hands which are both flushes are
+        // ranked using the rules for High Card.
+        // - Full House: 3 cards of the same value, with the remaining 2 cards forming a pair. Ranked
+        // by the value of the 3 cards.
+        // - Four of a kind: 4 cards with the same value. Ranked by the value of the 4 cards.
+        // - Straight flush: 5 cards of the same suit with consecutive values. Ranked by the highest card in the hand.
+
+        let decideHand (p1, cards1) (p2, cards2) =
+            __
+
+        AssertEquality
+            (Some player1)
+            (decideHand (player2, makeCards ["2H"; "3D"; "5S"; "9C"; "KD"]) (player2, makeCards ["2C"; "3H"; "4S"; "8C"; "AH"]))
+        AssertEquality
+            (Some player2)
+            (decideHand (player2, makeCards ["2H"; "4S"; "4C"; "2D"; "4H"]) (player2, makeCards ["2S"; "8S"; "AS"; "QS"; "3S"]))
+        AssertEquality
+            (Some player2)
+            (decideHand (player2, makeCards ["2H"; "3D"; "5S"; "9C"; "KD"]) (player2, makeCards ["2C"; "3H"; "4S"; "8C"; "KH"]))
+        AssertEquality
+            None
+            (decideHand (player2, makeCards ["2H"; "3D"; "5S"; "9C"; "KD"]) (player2, makeCards ["2D"; "3H"; "5C"; "9S"; "KH"]))
 
     // by setting the sead, we ensure the same random numbers come out
     // which is useful in this testing context
@@ -146,28 +215,8 @@ module KoansExercise =
         // The player that runs out of cards loses.
 
         let playGame() =
-
-            let getstrfromcard card =
-                match card |> snd with
-                | Rank x -> x
-                | Jack -> 11
-                | Queen -> 12
-                | King -> 13
-                | Ace -> 14
-
-            let rec playLoop p1Cards p2Cards =
-
-                if p2Cards |> List.length = 0 then player1 else
-                if p1Cards |> List.length = 0 then player2 else
-
-                let str1 = p1Cards |> List.head |> getstrfromcard
-                let str2 = p2Cards |> List.head |> getstrfromcard
-
-                if str1 = str2 then playLoop p1Cards.Tail p2Cards.Tail else
-                
-                if str1 > str2 then playLoop (p1Cards.Tail@[p1Cards.Head]) p2Cards.Tail else
-
-                playLoop p1Cards.Tail (p2Cards.Tail@[p2Cards.Head])
+            let rec playLoop plCards p2Cards =
+                __
 
             let p1DeltCards, p2DeltCards = dealCards()
 
