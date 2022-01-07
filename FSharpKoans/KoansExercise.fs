@@ -52,7 +52,7 @@ module KoansExercise =
             | '5' -> Rank 5
             | '6' -> Rank 6
             | '7' -> Rank 7
-            | '8' -> Rank 6
+            | '8' -> Rank 8
             | '9' -> Rank 9
             | 'T' -> Rank 10
             | 'J' -> Jack
@@ -90,11 +90,10 @@ module KoansExercise =
 
         AssertEquality (Some 13) (calculateBlackJackScore (makeCards ["3H"; "QD" ]))
         AssertEquality (Some 17) (calculateBlackJackScore (makeCards ["JD"; "5H"; "2S" ]))
-        AssertEquality (Some 17) (calculateBlackJackScore (makeCards ["9C"; "3H"; "2D"; "2S" ]))
+        AssertEquality (Some 16) (calculateBlackJackScore (makeCards ["9C"; "3H"; "2D"; "2S" ]))
         AssertEquality (Some 21) (calculateBlackJackScore (makeCards ["AS"; "QH" ]))
         AssertEquality (Some 12) (calculateBlackJackScore (makeCards ["AH"; "3C"; "8C" ]))
         AssertEquality None (calculateBlackJackScore (makeCards ["JD"; "4S"; "8H" ]))
-
 
     [<Koan>]
     let PokerHands() =
