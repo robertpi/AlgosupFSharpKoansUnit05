@@ -86,28 +86,30 @@ module KoansExercise =
         // Use an option as return type, with None meaning bust
 
         let calculateBlackJackScore cards =
-            let score (suit, rank) = 
-                match rank with
-                | Jack | Queen | King
-                | Ace -> 11
-                | Rank x -> x
+            let mutable optionResult = None
+            let mutable resulthight = 0
+            let mutable resultlow = 0
 
-            let scoreAce (suit, rank) = 
+            for(_,rank)in cards do
                 match rank with
-                | Jack | Queen | King
-                | Ace -> 1
-                | Rank x -> x
-                
-            let sum card = card |> List.map (fun x -> (score x)) |> List.sum
-
-            if sum cards > 21 then
-                let score = cards |> List.map (fun x -> (scoreAce x)) |> List.sum
-                if score > 21 then
-                    None
-                else
-                    score |> Some
+                | Ace -> resulthight <- resulthight+11
+                | Rank x -> resulthight <- resulthight+x 
+                | Jack -> resulthight <- resulthight+10
+                | Queen -> resulthight <- resulthight+10
+                | King-> resulthight <- resulthight+10
+            if resulthight>21 then
+                for(_,rank)in cards do
+                    match rank with
+                    | Ace -> resultlow <- resultlow+1
+                    | Rank x -> resultlow <- resultlow+x 
+                    | Jack -> resultlow <- resultlow+10
+                    | Queen -> resultlow <- resultlow+10
+                    | King-> resultlow <- resultlow+10
+                if resultlow<21 then
+                    optionResult <-Some resultlow
             else
-                sum cards |> Some
+                optionResult <- Some resulthight
+            optionResult
 
 
 
