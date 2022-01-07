@@ -88,31 +88,16 @@ module KoansExercise =
         let calculateBlackJackScore cards =
             let score (suit, rank) = 
                 match rank with
-                | Jack | Queen | King | Rank 10 -> 10
+                | Jack | Queen | King
                 | Ace -> 11
-                | Rank 2 -> 2
-                | Rank 3 -> 3
-                | Rank 4 -> 4
-                | Rank 5 -> 5
-                | Rank 6 -> 6
-                | Rank 7 -> 7
-                | Rank 8 -> 8
-                | Rank 9 -> 9
-                | _ -> 0
+                | Rank x -> x
 
             let scoreAce (suit, rank) = 
                 match rank with
-                | Jack | Queen | King | Rank 10 -> 10
+                | Jack | Queen | King
                 | Ace -> 1
-                | Rank 2 -> 2
-                | Rank 3 -> 3
-                | Rank 4 -> 4
-                | Rank 5 -> 5
-                | Rank 6 -> 6
-                | Rank 7 -> 7
-                | Rank 8 -> 8
-                | Rank 9 -> 9
-                | _ -> 0
+                | Rank x -> x
+                
             let sum card = card |> List.map (fun x -> (score x)) |> List.sum
 
             if sum cards > 21 then
